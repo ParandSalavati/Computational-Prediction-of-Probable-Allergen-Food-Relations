@@ -1,7 +1,7 @@
-import csv
 import pandas as pd
 import networkx as nx
 from networkx.algorithms import bipartite
+from openpyxl import Workbook
 
 # Load data from an Excel file
 df = pd.read_excel('Top10Allergens.xlsx')
@@ -36,29 +36,59 @@ pa_bottom = list(nx.preferential_attachment(G_bottom))
 aa_top = list(nx.adamic_adar_index(G_top))
 aa_bottom = list(nx.adamic_adar_index(G_bottom))
 
-# Print the results
-with open('Bipartiete Link Prediction Results.csv', 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow('Common Neighbors:')
-        writer.writerow('\nTop:')
-        writer.writerow(cn_top)
-        writer.writerow('\nBottom')
-        writer.writerow(cn_bottom)
+# an workbookworkbook = Workbook()
+workbook = Workbook()
 
-        writer.writerow('\n\nJaccard Coefficient:')
-        writer.writerow('\nTop:')
-        writer.writerow(jc_top)
-        writer.writerow('\nBottom')
-        writer.writerow(jc_bottom)
+# Create separate sheets for each chart
+cn_top_sheet = workbook.create_sheet(title='CN (Top)')
+cn_bottom_sheet = workbook.create_sheet(title="CN (Bottom)")
+jc_top_sheet = workbook.create_sheet(title="JC (Top)")
+jc_bottom_sheet = workbook.create_sheet(title="JC (Bottom)")
+pa_top_sheet = workbook.create_sheet(title="PA (Top)")
+pa_bottom_sheet = workbook.create_sheet(title="PA (Bottom)")
+aa_top_sheet = workbook.create_sheet(title="AA (Top)")
+aa_bottom_sheet = workbook.create_sheet(title="AA (Bottom)")
 
-        writer.writerow('\n\nPreferential Attachment:')
-        writer.writerow('\nTop:')
-        writer.writerow(pa_top)
-        writer.writerow('\nBottom')
-        writer.writerow(pa_bottom)
+# Write the results to the corresponding sheets
+cn_top_sheet.append(["Node 1", "Node 2", "Common Neighbors"])
+cn_top_sheet.append(["---", "---", "---"])
+for result in cn_top:
+    cn_top_sheet.append(result)
 
-        writer.writerow('\n\nAdamic-Adar:')
-        writer.writerow('\nTop:')
-        writer.writerow(aa_top)
-        writer.writerow('\nBottom')
-        writer.writerow(aa_bottom)
+cn_bottom_sheet.append(["Node 1", "Node 2", "Common Neighbors"])
+cn_bottom_sheet.append(["---", "---", "---"])
+for result in cn_bottom:
+    cn_bottom_sheet.append(result)
+
+jc_top_sheet.append(["Node 1", "Node 2", "Jaccard Coefficient"])
+jc_top_sheet.append(["---", "---", "---"])
+for result in jc_top:
+    jc_top_sheet.append(result)
+
+jc_bottom_sheet.append(["Node 1", "Node 2", "Jaccard Coefficient"])
+jc_bottom_sheet.append(["---", "---", "---"])
+for result in jc_bottom:
+    jc_bottom_sheet.append(result)
+
+pa_top_sheet.append(["Node 1", "Node 2", "Preferential Attachment"])
+pa_top_sheet.append(["---", "---", "---"])
+for result in pa_top:
+    pa_top_sheet.append(result)
+
+pa_bottom_sheet.append(["Node 1", "Node 2", "Preferential Attachment"])
+pa_bottom_sheet.append(["---", "---", "---"])
+for result in pa_bottom:
+    pa_bottom_sheet.append(result)
+
+aa_top_sheet.append(["Node 1", "Node 2", "Adamic-Adar"])
+aa_top_sheet.append(["---", "---", "---"])
+for result in aa_top:
+    aa_top_sheet.append(result)
+
+aa_bottom_sheet.append(["Node 1", "Node 2", "Adamic-Adar"])
+aa_bottom_sheet.append(["---", "---", "---"])
+for result in aa_bottom:
+    aa_bottom_sheet.append(result)
+
+# Save the Excel file
+workbook.save("Results.xlsx")
